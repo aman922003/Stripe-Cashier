@@ -3,14 +3,13 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\User;
-use App\Mail\DailyMessageMail;
-use Illuminate\Support\Facades\Mail;
+use App\Jobs\SendHelloMessageJob; 
+use Illuminate\Support\Facades\Log;
 
-class SendHelloMessage extends Command
+class SendHelloMessage extends Command 
 {
     protected $signature = 'send:hello-message';
-    protected $description = 'Send "Hello 5 Minute" message to every user every minute';
+    protected $description = 'Send "Hello Dude how are you!" message to every user every minute';
 
     public function __construct()
     {
@@ -19,19 +18,18 @@ class SendHelloMessage extends Command
 
     public function handle()
     {
-        $users = User::all();  
+        try {
+            $message = "Hello Dude how are you!";  
 
-        $message = "Hello Man!"; 
+            // Dispatch the job to the queue
+            SendHelloMessageJob::dispatch($message); 
 
-        // Loop through each user and send the email
-        foreach ($users as $index => $user) {
-            // $delayInSeconds = $index * 5; 
+            Log::info("Hello messages job dispatched successfully!");
 
-            // Mail::to($user->email)
-            //     ->later(now()->addSeconds($delayInSeconds), new DailyMessageMail($message));
-            Mail::to($user->email)->send(new DailyMessageMail($message));
+            $this->info('Job dispatched to send hello messages!');
+
+        } catch (\Throwable $t) {
+            Log::error("Error in SendHelloMessage Command: " . $t->getMessage());
         }
-
-        $this->info('Hello messages sent successfully!');
     }
 }
