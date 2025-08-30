@@ -87,7 +87,6 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/test-mail', [TestMailController::class, 'showForm'])->name('test.mail.form');
         Route::post('/test-mail', [TestMailController::class, 'sendMail'])->name('test.mail.send');
-        dgdfgfg
 
 
 
