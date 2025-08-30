@@ -1,0 +1,30 @@
+1. Customer Requests a Refund
+Valid Request: If a customer is dissatisfied with a product or service, you might issue a refund as part of your customer service policy. You don’t have to agree to every request, but it’s often a good practice for customer retention and reputation.
+
+Refund Policy: If you have a clear refund policy (e.g., within 30 days), that helps to set expectations. Ensure the customer is within your refund policy guidelines.
+
+2. Charge Error / Duplicate Charges
+If a customer was charged more than once for the same item or if there was an error in processing (like an accidental overcharge), you should issue a refund to correct the mistake.
+
+Example: The customer was charged twice for the same transaction.
+
+3. Subscription Cancellations
+If your business runs on subscriptions (like SaaS), customers who cancel within the billing period might expect a refund for the unused time.
+
+Refunds here are typically prorated, depending on your cancellation policy.
+
+4. Failed or Canceled Orders
+If the product or service is not available or the order cannot be fulfilled (e.g., out of stock), you should issue a refund to the customer.
+
+Example: A customer orders an item that is no longer available, and you cannot fulfill the order.
+
+5. Fraudulent Charges
+If a customer disputes a charge (for example, if a card is stolen), Stripe will notify you about a chargeback, and you might need to issue a refund to the customer. However, you’ll usually have a chance to dispute the chargeback, providing evidence to Stripe.
+
+6. Refunding a Disputed Charge (Chargeback)
+If a chargeback is filed and the customer’s bank rules in their favor, you may be required to refund the customer. In these cases, Stripe will deduct the refund amount from your account balance, along with any applicable chargeback fees.
+
+You can try to dispute the chargeback if you feel it’s not valid, but if the customer wins, you’ll need to return the funds.
+
+7. Customer-Specific Situations
+Sometimes a customer may have a personal situation where they request a refund (e.g., financial hardship). It's up to you whether or not you want to accommodate those requests.

@@ -10,6 +10,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\TestMailController;
 
 Route::get('/', function () {
     Log::info('update eeeee');
@@ -45,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/subscriptions', [SubscriptionController::class, 'index'])
             ->name('subscriptions.index');
-//
+
         Route::get('/subscriptions/{id}', [SubscriptionController::class, 'show'])
             ->name('subscriptions.show');
 
@@ -75,6 +76,17 @@ Route::middleware('auth')->group(function () {
             ->name('coupons.unassign');
 
 
+        // Transaction Refund payment
+        // Route::post('transactions/{invoice}/refund', [TransactionController::class, 'refund'])->name('transactions.refund');
+        // Route::post('transactions/{invoice}/cancelRefund', [TransactionController::class, 'cancelRefund'])->name('transactions.cancelRefund');
+        Route::middleware(['auth'])->group(function () {
+
+        Route::post('transactions/{invoice}/refund', [TransactionController::class, 'refund'])->name('transactions.refund');
+        Route::post('transactions/{invoice}/cancelRefund', [TransactionController::class, 'cancelRefund'])->name('transactions.cancelRefund');
+});
+
+        Route::get('/test-mail', [TestMailController::class, 'showForm'])->name('test.mail.form');
+        Route::post('/test-mail', [TestMailController::class, 'sendMail'])->name('test.mail.send');
 
 
 

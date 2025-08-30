@@ -169,6 +169,48 @@ class CouponController extends Controller
             'code' => $promoCode,
         ]);
 
+         // Reassign new promo code to all assigned users
+        $assignedUsers = $coupon->users;
+
+        foreach ($assignedUsers as $user) {
+            if (!$user->stripe_id) continue;
+
+            try {
+                $stripeCustomer = \Stripe\Customer::retrieve($user->stripe_id);
+
+                // Remove old discount
+                if (isset($stripeCustomer->discount)) {
+                    $stripeCustomer->deleteDiscount();
+                }
+
+                // Assign new promo code if we have one
+                if ($promoId) {
+                    \Stripe\Customer::update($stripeCustomer->id, [
+                        'promotion_code' => $promoId,
+                    ]);
+                }
+
+                // Remove and re-apply discount on active subscriptions
+                $subscriptions = \Stripe\Subscription::all([
+                    'customer' => $user->stripe_id,
+                    'status' => 'active',
+                ]);
+
+                foreach ($subscriptions->data as $sub) {
+                    if (isset($sub->discount)) {
+                        $sub->deleteDiscount();
+                    }
+
+                    \Stripe\Subscription::update($sub->id, [
+                        'promotion_code' => $promoId,
+                    ]);
+                }
+
+            } catch (\Exception $e) {
+                \Log::error('Error reassigning promo for user ID ' . $user->id . ': ' . $e->getMessage());
+            }
+        }
+
         return redirect()->route('coupons.index')->with('success', 'Coupon updated on Stripe and locally.');
     }
 
@@ -206,10 +248,17 @@ class CouponController extends Controller
     public function assignToUsers(Request $request, $id)
     {
         $coupon = Coupon::findOrFail($id);
+        //    if (!$this->isCouponStillValid($coupon)) {
+        //         return back()->with('error', 'This coupon has reached its maximum redemptions or is inactive.');
+        //     }
         $request->validate([
             'user_ids' => 'required|array',
             'user_ids.*' => 'exists:users,id',
         ]);
+
+        // if ($coupon->max_redemptions && $coupon->redemptions >= $coupon->max_redemptions) {
+        //     return back()->with('error', 'This coupon has reached its maximum redemptions.');
+        // }
 
         foreach ($request->user_ids as $userId) {
             $user = User::findOrFail($userId);
@@ -330,6 +379,10 @@ class CouponController extends Controller
             'friend_email' => 'required|email',
         ]);
 
+        if (!$this->isCouponStillValid($coupon)) {
+            return back()->with('error', 'This coupon has reached its maximum redemptions or is inactive.');
+        }
+
         // Store invite
         CouponInvite::create([
             'coupon_id' => $coupon->id,
@@ -344,4 +397,25 @@ class CouponController extends Controller
 
         return back()->with('success', 'Invitation sent!');
     }
+
+    protected function isCouponStillValid(Coupon $coupon)
+    {
+        try {
+            $stripeCoupon = \Stripe\Coupon::retrieve($coupon->stripe_id);
+            $promotion = $coupon->promo_id ? \Stripe\PromotionCode::retrieve($coupon->promo_id) : null;
+
+            if (
+                ($stripeCoupon->max_redemptions && $stripeCoupon->times_redeemed >= $stripeCoupon->max_redemptions) ||
+                ($promotion && !$promotion->active)
+            ) {
+                return false;
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            \Log::error('Stripe validation failed: ' . $e->getMessage());
+            return false; // If error happens, fail safe by saying it's not valid
+        }
+    }
+
 }

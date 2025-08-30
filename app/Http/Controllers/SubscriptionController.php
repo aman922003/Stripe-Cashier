@@ -104,7 +104,7 @@ class SubscriptionController extends Controller
         $user = $request->user();
         $sub = $user->subscriptions()->findOrFail($id);
 
-        if (! $sub->onGracePeriod()) {
+        if (!$sub->onGracePeriod()) {
             return redirect()->back()->with('error', 'This subscription cannot be renewed.');
         }
 

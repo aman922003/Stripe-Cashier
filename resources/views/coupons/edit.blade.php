@@ -43,7 +43,7 @@
 
                     <div class="mb-4">
                         <label class="block text-gray-700 dark:text-gray-200">Currencies</label>
-                        <input type="text" name="currencies" class="w-full border-gray-300 rounded mt-1"
+                        <input type="text" name="currencies" class="w-full   border-gray-300 rounded mt-1"
                                value="{{ old('currencies', is_array($coupon->currencies) ? implode(',', $coupon->currencies) : '') }}">
                         @error('currencies') <span class="text-red-600">{{ $message }}</span> @enderror
                     </div>

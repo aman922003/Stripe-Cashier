@@ -24,6 +24,9 @@
                     <x-nav-link :href="route('subscriptions.index')" :active="request()->routeIs('subscriptions.*')">
                         {{ __('Subscriptions') }}
                     </x-nav-link>
+                     <x-nav-link :href="route('test.mail.form')" :active="request()->routeIs('test.mail.form')">
+                        {{ __('Sending Email') }}
+                    </x-nav-link>
                      <x-nav-link :href="route('coupons.index')" :active="request()->routeIs('coupons')">
                         {{ __('Coupons') }}
                     </x-nav-link>
