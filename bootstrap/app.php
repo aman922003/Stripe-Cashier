@@ -22,6 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function (Schedule $schedule) { 
         // Schedule commands as needed
-        $schedule->command('send:emails')->everyMinute(); // Email sending command
+        // $schedule->command('send:emails')->everyMinute(); // Email sending command
+        // $schedule->command('send:hello-message')->everyMinute();
+        // $schedule->command('send:hello-message')->everyTwoSeconds();
+        $schedule->command('send:hello-message')->everySecond();
     })
     ->create(); 

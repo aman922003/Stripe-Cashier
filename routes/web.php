@@ -88,5 +88,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/test-mail', [TestMailController::class, 'showForm'])->name('test.mail.form');
         Route::post('/test-mail', [TestMailController::class, 'sendMail'])->name('test.mail.send');
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 503a7d4b24f3188f54b87e85b9dd4fc310c4241d
 require __DIR__.'/auth.php';
 dsf

@@ -32,6 +32,5 @@ class SendStripeEmailJob implements ShouldQueue
     public function handle()
     {
         Mail::to($this->email)->send(new StripeNotificationMail($this->data));
-        // \App\Jobs\SendStripeEmailJob::dispatch($user->email, $data);
     }
 }
