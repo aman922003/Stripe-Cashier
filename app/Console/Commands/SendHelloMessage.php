@@ -10,7 +10,7 @@ class SendHelloMessage extends Command
 {
     protected $signature = 'send:hello-message';
     protected $description = 'Send "Hello Dude how are you!" message to every user every minute';
-
+    
     public function __construct()
     {
         parent::__construct();
@@ -19,9 +19,8 @@ class SendHelloMessage extends Command
     public function handle()
     {
         try {
-            $message = "Hello Dude how are you!";  
+            $message = "Hello jobs how are you!";  
 
-            // Dispatch the job to the queue
             SendHelloMessageJob::dispatch($message); 
 
             Log::info("Hello messages job dispatched successfully!");
